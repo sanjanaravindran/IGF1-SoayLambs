@@ -103,7 +103,7 @@ temp_rw <- process_fit_mod(fit_mod_reprowt, temp_rw)
 (violplot_r <- plot_violin(temp_r, "First-Year Breeding Probability"))
 (violplot_rw <- plot_violin(temp_rw, "First-Year Breeding Probability (Model controlling for weight)"))
 
-# Compare variances of IGF_obs vs IGF_true
+# Compare means and variances of IGF_obs vs IGF_true
 var(temp_s$IGF1_sc)
 var(temp_s$IGF_true)
 cor.test(temp_s$IGF1_sc, temp_s$IGF_true)
