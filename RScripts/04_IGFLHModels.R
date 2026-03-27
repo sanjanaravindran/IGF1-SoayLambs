@@ -3,20 +3,14 @@ set.seed(2025)
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(see, tidybayes, rstanarm, rethinking, cmdstanr, parameters, tidyverse, lmerTest, ggeffects, plyr, reshape2, rptR, viridis, cowplot, bayesplot, patchwork, ggpubr, mgcv)
 
-# Set wd
-setwd("~/Desktop/IGF1_MS/Analysis/R_Scripts")
+# Set wd and source funcs
 source("00_functions.R")
 
 # Read Data
-igf_lh_data <- read.csv('IGF1_SoayLambs_Final.csv',  header = T, stringsAsFactors = F, fileEncoding="UTF-8-BOM")
+igf_lh_data <- read.csv('IGF1_SoayLambs.csv',  header = T, stringsAsFactors = F, fileEncoding="UTF-8-BOM")
 
 # # Temp dataset for stan models 
 temp <- igf_lh_data
-
-# Conver Sex to female or not
-temp <- temp %>%
-  mutate(SexF = case_when(Sex == 1 ~ 1, 
-                          Sex == 2 ~ 0))
 
 # Subset relevant columns
 temp <- temp %>%
@@ -94,9 +88,8 @@ full_post_reprowt$Trait <- c("ReproWt")
 
 full_post_df <- bind_rows(full_post_surv, full_post_survwt, full_post_repro, full_post_reprowt)
 full_post_df
-# write.table(full_post_df, file = "./TableLHNoPreds.csv", sep = ",",row.names = FALSE)
 
-# Exrtact samples 
+# Extract samples 
 # Add "true" IGF values estimated in model to original dataset with observed values to compare against
 temp_s <- process_fit_mod(fit_mod_surv, temp_s)
 temp_sw <- process_fit_mod(fit_mod_survwt, temp_sw)
@@ -110,7 +103,7 @@ temp_rw <- process_fit_mod(fit_mod_reprowt, temp_rw)
 (violplot_r <- plot_violin(temp_r, "First-Year Breeding Probability"))
 (violplot_rw <- plot_violin(temp_rw, "First-Year Breeding Probability (Model controlling for weight)"))
 
-# Compare means and variances of IGF_obs vs IGF_true
+# Compare variances of IGF_obs vs IGF_true
 var(temp_s$IGF1_sc)
 var(temp_s$IGF_true)
 cor.test(temp_s$IGF1_sc, temp_s$IGF_true)
