@@ -3,23 +3,11 @@ set.seed(2025)
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(see, tidybayes, rstanarm, rethinking, cmdstanr, parameters, tidyverse, lmerTest, ggeffects, plyr, reshape2, rptR, viridis, cowplot, bayesplot, patchwork, ggpubr, mgcv)
 
-# Set wd
-setwd("~/Desktop/IGF1_MS/Analysis/R_Scripts")
+# Set wd and source funcs
 source("00_functions.R")
 
 # Read Data
-igf_lh_data <- read.csv('IGF1_SoayLambs_Final.csv',  header = T, stringsAsFactors = F, fileEncoding="UTF-8-BOM")
-
-# Recoding Sex as female or not
-igf_lh_data <- igf_lh_data %>%
-  mutate(SexF = case_when(Sex == 1 ~ "1", 
-                          Sex == 2 ~ "0"))
-
-# Specifying horntype as normal, polled or scurred
-igf_lh_data <- igf_lh_data %>%
-  mutate(HornType = case_when(Horn == 1 ~ "Scurred", 
-                              Horn == 2 ~ "Polled",
-                              Horn == 3 ~ "Normal"))
+igf_lh_data <- read.csv('IGF1_SoayLambs.csv',  header = T, stringsAsFactors = F, fileEncoding="UTF-8-BOM")
 
 # Convert relevant columns to factor 
 cols_f <- c("SexF", "Twin", "HornType")
@@ -253,8 +241,7 @@ plot3 <- cowplot::plot_grid(igf_hist ,
 plot3
 # ggsave("FigS2.tiff", plot3, dpi=600, width=5, height=6, bg="white" )
 
-
-# Extract variance components
+# Getting model summaries
 posterior_igf_df <- as.data.frame(mod_igf)
 med_igf_df <- t(median_hdci(posterior_igf_df))
 p_value(mod_igf, method="hdi")
@@ -263,7 +250,7 @@ vec_m <- as.data.frame(matrix(med_igf_df[c(1:18, 1030:1044),], ncol=3, nrow=11, 
 vec_m$Parameter <- c("Intercept", "SexF", "Twin", "PopSize", "MumAge1", "MumAge2", "Resid_SD", "MumID_var", "Plate_var", "BirthYear_var", "ELISADate_var")
 # write.table(vec_m, file = "./TableIGF1Model.csv", sep = ",",row.names = FALSE)
 
-# Extract variance components 
+# Getting model summaries
 posterior_igf_df <- as.data.frame(mod_igf_unscaled)
 med_igf_df <- t(median_hdci(posterior_igf_df))
 p_value(mod_igf_unscaled, method="hdi")
@@ -271,15 +258,6 @@ vec_m <- as.data.frame(matrix(med_igf_df[c(1:18, 1030:1044),], ncol=3, nrow=11, 
 
 vec_m$Parameter <- c("Intercept", "SexF", "Twin", "PopSize", "MumAge1", "MumAge2", "Resid_SD", "MumID_var", "Plate_var", "BirthYear_var", "ELISADate_var")
 # write.table(vec_m, file = "./TableIGF1Model_unscaled.csv", sep = ",",row.names = FALSE)
-
-# Extract variance components
-variance_table <- as.data.frame(VarCorr(mod_igf))
-variance_table <- add_prop_var(variance_table)
-
-# Model summary table 
-modelsummary(mod_igf, statistic = "conf.int")
-print(mod_igf, digits=2)
-summary(mod_igf, probs=c(.025, .975), digits=2)
 
 #######################################################
 # Model looking at whether horn type predicts igf1
@@ -329,15 +307,6 @@ p4 <- ggplot(horn_preds, aes(x = HornType)) +
 
 p4
 # ggsave("./FigS1_Horns.tiff", p4, dpi=600, width=6, height=4, bg="white" )
-
-# Extract variance components
-posterior_igf_df <- as.data.frame(mod_igf_horns)
-med_igf_df <- t(median_hdci(posterior_igf_df))
-p_value(mod_igf_horns, method="hdi")
-vec_m <- as.data.frame(matrix(med_igf_df[c(1:24, 1036:1050),], ncol=3, nrow=13, byrow = TRUE))
-
-vec_m$Parameter <- c("Intercept", "SexF", "Twin", "HTPolled", "HTScurred", "PopSize", "MumAge1", "MumAge2", "Resid_SD", "MumID_var", "Plate_var", "BirthYear_var", "ELISADate_var")
-# write.table(vec_m, file = "./Table1_horntype.csv", sep = ",",row.names = FALSE)
 
 ########################################################
 # Add models explroing storage time effects 
@@ -396,14 +365,6 @@ p7
 
 # ggsave("IGFStorageTime.tiff", p7, dpi=600, height = 6, width=8, bg="white" )
 
-# Extract posterior draws for later use
-posterior_igf_df <- as.data.frame(mod_igf_st)
-med_igf_df <- t(median_hdci(posterior_igf_df))
-p_value(mod_igf_st, method="hdi")
-vec_m <- as.data.frame(matrix(med_igf_df[c(1:21, 1033:1047),], ncol=3, nrow=12, byrow = TRUE))
-
-vec_m$Parameter <- c("Intercept", "SexF", "Twin", "PopSize", "StorageTime", "MumAge1", "MumAge2", "Resid_SD", "MumID_var", "Plate_var", "BirthYear_var", "ELISADate_var")
-
 ########################################################
 # Add models explroing sample collection time effects 
 # IGF-1 Model
@@ -424,13 +385,6 @@ mod_igf_toc <- rstanarm::stan_lmer(IGF1 ~  SexF + Twin + PopSize_sc + SampleColl
                                    cores=4, 
                                    seed=12345,
                                    data=temp_toc)
-
-# Extract variance components 
-posterior_igf_df <- as.data.frame(mod_igf_toc)
-med_igf_df <- t(median_hdci(posterior_igf_df))
-p_value(mod_igf_toc, method="hdi")
-vec_m <- as.data.frame(matrix(med_igf_df[c(1:24, 1000:1014),], ncol=3, nrow=13, byrow = TRUE))
-vec_m$Parameter <- c("Intercept", "SexF", "Twin", "PopSize", "Afternoon", "Evening",  "MumAge1", "MumAge2", "Resid_SD", "MumID_var", "Plate_var", "BirthYear_var", "ELISADate_var")
 
 # Horn effect
 toc_eff <- temp_toc %>%
@@ -465,14 +419,3 @@ p8 <- ggplot(toc_preds, aes(x = SampleCollectionTimeofDay)) +
 
 p8
 # ggsave("IGFSampleCollectionTOC.tiff", p8, dpi=600, height = 6, width=8, bg="white" )
-
-# Extract variance components
-posterior_igf_toc_df <- as.data.frame(mod_igf_unscaled_toc)
-med_igf_toc_df <- median_hdci(posterior_igf_toc_df)
-p_value(posterior_igf_st_df, method="hdi")
-
-# Model summary table 
-modelsummary(mod_igf_unscaled_st, statistic = "conf.int")
-print(mod_igf_unscaled_st, digits=2)
-summary(mod_igf_unscaled_st, probs=c(.025, .975), digits=2)
-
