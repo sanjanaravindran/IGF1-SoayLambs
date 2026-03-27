@@ -13,11 +13,6 @@ igf_lh_data <- read.csv('IGF1_SoayLambs_Final.csv',  header = T, stringsAsFactor
 # # Temp dataset for stan models 
 temp <- igf_lh_data
 
-# Conver Sex to female or not
-temp <- temp %>%
-  mutate(SexF = case_when(Sex == 1 ~ 1, 
-                          Sex == 2 ~ 0))
-
 # Subset relevant columns
 temp <- temp %>%
   select(ID, Weight, ForeLeg, HornLen, Horn, Survival, BredAsAYearling, IGF1, SexF, Twin, PopSize, BirthYear, MumID, MumAge, ELISARunDate, PlateNumber, Age, BirthWt) 
@@ -75,7 +70,14 @@ color_scheme_set("mix-teal-pink")
 (p9 <- generate_and_plot_ppc(fit_mod_repro, "BredAsAYearling_rep", temp_r, temp_r$BredAsAYearling, "First-Year Reproduction"))
 (p10 <- generate_and_plot_ppc(fit_mod_reprowt, "BredAsAYearling_rep", temp_rw, temp_rw$BredAsAYearling, "Reproduction (Model controlling for weight)"))
 
-#
+# Extract samples 
+# Add "true" IGF values estimated in model to original dataset with observed values to compare against
+temp_s <- process_fit_mod(fit_mod_surv, temp_s)
+temp_sw <- process_fit_mod(fit_mod_survwt, temp_sw)
+temp_r <- process_fit_mod(fit_mod_repro, temp_r)
+temp_rw <- process_fit_mod(fit_mod_reprowt, temp_rw)
+
+
 # Get posterior draws 
 post_survival <- process_fit_bernoulli_model_ma(fit_mod_surv, temp_s, 
                                                 c("alpha", "beta_IGF", "beta_SexF", "beta_Twin", "beta_PopSize", "beta_MumAge1", "beta_MumAge2"), 
@@ -157,8 +159,6 @@ post_reprowt <- process_fit_bernwt_model_ma(fit_mod_reprowt, temp_rw,
 # Save both survival and repro plots
 plot_fin <- (plot_repro + plot_reprowt) /(plot_surv + plot_survwt) + plot_annotation(tag_levels = 'A')
 plot_fin
-# ggsave("Fig_IGFReproAndSurv_Fig4.tiff", plot_fin, dpi=600, height = 10, bg="white" )
-
 
 # Model summary
 # List the predictors for each model
@@ -178,14 +178,6 @@ full_post_df <- bind_rows(full_post_surv, full_post_survwt,
 )
 full_post_df
 
-
-# Exrtact samples 
-# Add "true" IGF values estimated in model to original dataset with observed values to compare against
-temp_s <- process_fit_mod(fit_mod_surv, temp_s)
-temp_sw <- process_fit_mod(fit_mod_survwt, temp_sw)
-temp_r <- process_fit_mod(fit_mod_repro, temp_r)
-temp_rw <- process_fit_mod(fit_mod_reprowt, temp_rw)
-
 # Plotting
 # Scatter-plot of IGF_true and observed IGF values 
 (violplot_s <- plot_violin(temp_s, "Survival"))
@@ -193,7 +185,7 @@ temp_rw <- process_fit_mod(fit_mod_reprowt, temp_rw)
 (violplot_r <- plot_violin(temp_r, "Reproduction"))
 (violplot_rw <- plot_violin(temp_rw, "Reproduction (Model controlling for weight)"))
 
-# Compare means and variances of IGF_obs vs IGF_true
+# Compare variances of IGF_obs vs IGF_true
 var(temp_s$IGF1_sc)
 var(temp_s$IGF_true)
 cor.test(temp_s$IGF1_sc, temp_s$IGF_true)
@@ -201,7 +193,7 @@ cor.test(temp_s$IGF1_sc, temp_s$IGF_true)
 var(temp_sw$IGF1_sc)
 var(temp_sw$IGF_true)
 cor.test(temp_sw$IGF1_sc, temp_sw$IGF_true)
-# 
+
 var(temp_r$IGF1_sc)
 var(temp_r$IGF_true)
 cor.test(temp_r$IGF1_sc, temp_r$IGF_true)
