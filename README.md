@@ -35,6 +35,6 @@ HornLen: Length of the horns (in mm) measured in AAugust
 BredAsAYearling: Did not reproduce = 0, Reproduced = 1
 Survival:  Died in the first year = 0, Survived first year = 1
 
-### Note: The parameter estimates obtained from re-running Bayesian models may differ slightly from reported estimates.
+Note: The parameter estimates obtained from re-running Bayesian models may differ slightly from reported estimates.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
