@@ -37,4 +37,26 @@ HornLen: Length of the horns (in mm) measured in AAugust
 BredAsAYearling: Did not reproduce = 0, Reproduced = 1
 Survival:  Died in the first year = 0, Survived first year = 1
 
+#-------------------------------------------------------------------------#
+### IGF-1 R Scripts description###
+Filename: 00_functions.R
+Custom functions used for IGF-1 data analysis and modelling
+
+Filename: 01_IGFModels.R
+R script to run models investigating associations of resource availability proxies on IGF-1
+
+Filename: 02_IGFMorphoModels.R
+R script to run Stan models investigating associations of IGF-1 on morphological traits
+
+Filename: 03_IGFMorphoModels_RAP.R
+R script to run Stan models investigating associations of IGF-1 on morphological traits, controlling for resource availability proxies
+
+Filename: 04_IGFLHModels.R
+R script to run Stan models investigating associations of IGF-1 on life-history traits
+
+Filename: 05_IGFLHModels_RAP.R
+R script to run Stan models investigating associations of IGF-1 on life-history traits, controlling for resource availability proxies
+
 Note: The parameter estimates obtained from re-running Bayesian models on your local computer may differ slightly from reported estimates.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
