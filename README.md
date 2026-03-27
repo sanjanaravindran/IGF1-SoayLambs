@@ -1,4 +1,4 @@
-# PLEASE READ THIS BEFORE USING THE DATA
+# Please read this before using the data
 This repository contains the data and code for our paper titled 'Plasma insulin-like growth-factor 1 (IGF-1) concentrations predict early life-history traits in a wild mammal'. The scripts are also on Github (https://github.com/sanjanaravindran/IGF1-SoayLambs). For any questions, please contact Sanjana Ravindran (sravindr@ed.ac.uk).
 
 The attached files contain data derived from the long term field project monitoring individual Soay sheep on St Kilda and their environment. This is a request to please let us know if you use them. Several people have spent the best part of their careers collecting the data. If you plan to analyse the data, there are a number of reasons why it would be very helpful if you could contact Dan Nussey (dan.nussey@ed.ac.uk) before doing so.
