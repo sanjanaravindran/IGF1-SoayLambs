@@ -14,13 +14,13 @@ temp <- igf_lh_data
 
 # Subset relevant columns
 temp <- temp %>%
-  select(ID, Weight, ForeLeg, HornLen, Horn, Survival, BredAsAYearling, IGF1, SexF, Twin, PopSize, BirthYear, MumID, MumAge, ELISARunDate, PlateNumber, DaysSinceBirth, BirthWt) 
+  select(ID, Weight, ForeLeg, HornLen, Horn, Survival, BredAsAYearling, IGF1, SexF, Twin, PopSize, BirthYear, MumID, MumAge, ELISARunDate, PlateNumber, Age, BirthWt) 
 
 # Split data into different subsets (weight, foreleg, survival, repro)
-temp_s <- temp %>% select(-ForeLeg, -Weight, -HornLen, -Horn, -BredAsAYearling, -BirthWt, -DaysSinceBirth) %>% drop_na()
-temp_sw <- temp %>% select(-ForeLeg, -HornLen, -Horn, -BredAsAYearling, -BirthWt, -DaysSinceBirth) %>% drop_na()
-temp_r <- temp %>% select(-ForeLeg, -Weight, -HornLen, -Horn, -Survival, -BirthWt, -DaysSinceBirth) %>% drop_na()
-temp_rw <- temp %>% select(-ForeLeg, -HornLen, -Horn, -Survival, -BirthWt, -DaysSinceBirth) %>% drop_na()
+temp_s <- temp %>% select(-ForeLeg, -Weight, -HornLen, -Horn, -BredAsAYearling, -BirthWt, -Age) %>% drop_na()
+temp_sw <- temp %>% select(-ForeLeg, -HornLen, -Horn, -BredAsAYearling, -BirthWt, -Age) %>% drop_na()
+temp_r <- temp %>% select(-ForeLeg, -Weight, -HornLen, -Horn, -Survival, -BirthWt, -Age) %>% drop_na()
+temp_rw <- temp %>% select(-ForeLeg, -HornLen, -Horn, -Survival, -BirthWt, -Age) %>% drop_na()
 
 # # Convert cols to numeric
 cols_n <- c("ELISARunDate", "PlateNumber", "BirthYear", "MumID")
