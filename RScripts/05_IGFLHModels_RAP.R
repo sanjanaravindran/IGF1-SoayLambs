@@ -184,7 +184,7 @@ full_post_df
 (violplot_r <- plot_violin(temp_r, "Reproduction"))
 (violplot_rw <- plot_violin(temp_rw, "Reproduction (Model controlling for weight)"))
 
-# Compare variances of IGF_obs vs IGF_true
+# Compare means and variances of IGF_obs vs IGF_true
 var(temp_s$IGF1_sc)
 var(temp_s$IGF_true)
 cor.test(temp_s$IGF1_sc, temp_s$IGF_true)
