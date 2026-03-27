@@ -8,10 +8,9 @@ The attached files contain data derived from the long term field project monitor
 3) At any one time a number of people within the existing project collaboration are analysing data from this project. Someone else may already be conducting the analysis you have in mind and it is desirable to prevent duplication of effort.
 4) In order to maintain funding for the project(s), every few years we have to write proposals for original analyses to funding agencies. It is therefore very helpful for those running the project to know what data analyses are in progress.
 5) Individual identifiers may vary relative to other data archives from papers using the individual-level data.
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #-------------------------------------------------------------------------#
-### IGF-1 data description ###
+### IGF-1 dataset description ###
 Filename: IGF1_SoayLambs.csv
 Variables:
 ID: Sheep ID (anonymized)
@@ -35,3 +34,7 @@ ForeLeg: Length of the foreleg (in mm) measured in August
 HornLen: Length of the horns (in mm) measured in AAugust
 BredAsAYearling: Did not reproduce = 0, Reproduced = 1
 Survival:  Died in the first year = 0, Survived first year = 1
+
+### Note: The parameter estimates obtained from re-running Bayesian models may differ slightly from reported estimates.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
