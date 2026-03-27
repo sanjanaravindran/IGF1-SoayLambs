@@ -3,8 +3,7 @@ set.seed(2025)
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(see, tidybayes, rstanarm, rethinking, cmdstanr, parameters, tidyverse, lmerTest, ggeffects, plyr, reshape2, rptR, viridis, cowplot, bayesplot, patchwork, ggpubr, mgcv)
 
-# Set wd
-setwd("~/Desktop/IGF1_MS/Analysis/R_Scripts")
+# Set wd and source funcs
 source("00_functions.R")
 
 # Read Data
