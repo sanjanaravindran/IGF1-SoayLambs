@@ -3,20 +3,14 @@ set.seed(2025)
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(see, tidybayes, rstanarm, rethinking, cmdstanr, parameters, tidyverse, lmerTest, ggeffects, plyr, reshape2, rptR, viridis, cowplot, bayesplot, patchwork, ggpubr, mgcv)
 
-# Set wd
-setwd("~/Desktop/IGF1_MS/Analysis/R_Scripts")
+# Set wd and source funcs
 source("00_functions.R")
 
 # Read Data
-igf_lh_data <- read.csv('IGF1_SoayLambs_Final.csv',  header = T, stringsAsFactors = F, fileEncoding="UTF-8-BOM")
+igf_lh_data <- read.csv('IGF1_SoayLambs.csv',  header = T, stringsAsFactors = F, fileEncoding="UTF-8-BOM")
 
 # # Temp dataset for stan models 
 temp <- igf_lh_data
-
-# Conver Sex to female or not
-temp <- temp %>%
-  mutate(SexF = case_when(Sex == 1 ~ 1, 
-                          Sex == 2 ~ 0))
 
 # Subset relevant columns
 temp <- temp %>%
@@ -102,6 +96,14 @@ color_scheme_set("mix-teal-pink")
 (p3 <- generate_and_plot_ppc(fit_mod_forelegw, "ForeLeg_rep", temp_fw, temp_fw$ForeLeg, "ForeLeg"))
 (p6 <- generate_and_plot_ppc(fit_mod_hornlenw, "HornLen_rep", temp_hw, temp_hw$HornLen, "HornLen"))
 
+# Exrtact samples 
+# Add "true" IGF values estimated in model to original dataset with observed values to compare against
+temp_w <- process_fit_mod(fit_mod_weight, temp_w)
+temp_f <- process_fit_mod(fit_mod_foreleg, temp_f)
+temp_h <- process_fit_mod(fit_mod_hornlen, temp_h)
+temp_g <- process_fit_mod(fit_mod_growth, temp_g)
+temp_fw <- process_fit_mod(fit_mod_forelegw, temp_fw)
+temp_hw <- process_fit_mod(fit_mod_hornlenw, temp_hw)
 
 # Get posterior draws of weight and compare with observed
 # bayesplot::mcmc_intervals(fit_mod_weight$draws(), pars = c("beta_IGF", "beta_SexF"))
@@ -215,17 +217,6 @@ full_post_hornlenw$Trait <- c("HornLenWt")
 full_post_df <- bind_rows(full_post_weight, full_post_foreleg, full_post_hornlen, full_post_growth, 
                           full_post_forelegw, full_post_hornlenw
                           )
-# write.table(full_post_df, file = "./Table2B.csv", sep = ",",row.names = FALSE)
-
-# Exrtact samples 
-# Add "true" IGF values estimated in model to original dataset with observed values to compare against
-temp_w <- process_fit_mod(fit_mod_weight, temp_w)
-temp_f <- process_fit_mod(fit_mod_foreleg, temp_f)
-temp_h <- process_fit_mod(fit_mod_hornlen, temp_h)
-temp_g <- process_fit_mod(fit_mod_growth, temp_g)
-temp_fw <- process_fit_mod(fit_mod_forelegw, temp_fw)
-temp_hw <- process_fit_mod(fit_mod_hornlenw, temp_hw)
-
 # Plotting
 # Scatter-plot of IGF_true and observed IGF values 
 (violplot_w <- plot_violin(temp_w, "Weight"))
@@ -235,7 +226,7 @@ temp_hw <- process_fit_mod(fit_mod_hornlenw, temp_hw)
 (violplot_fw <- plot_violin(temp_fw, "Foreleg Length"))
 (violplot_hw <- plot_violin(temp_hw, "Horn Length"))
 
-# Compare means and variances of IGF_obs vs IGF_true
+# Compare variances of IGF_obs vs IGF_true
 var(temp_w$IGF1_sc)
 var(temp_w$IGF_true)
 cor.test(temp_w$IGF_true, temp_w$IGF1_sc)
