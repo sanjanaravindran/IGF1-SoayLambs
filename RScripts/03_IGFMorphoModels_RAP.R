@@ -226,7 +226,7 @@ full_post_df <- bind_rows(full_post_weight, full_post_foreleg, full_post_hornlen
 (violplot_fw <- plot_violin(temp_fw, "Foreleg Length"))
 (violplot_hw <- plot_violin(temp_hw, "Horn Length"))
 
-# Compare variances of IGF_obs vs IGF_true
+# Compare means and variances of IGF_obs vs IGF_true
 var(temp_w$IGF1_sc)
 var(temp_w$IGF_true)
 cor.test(temp_w$IGF_true, temp_w$IGF1_sc)
