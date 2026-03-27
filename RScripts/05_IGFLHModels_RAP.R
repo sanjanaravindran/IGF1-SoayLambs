@@ -8,7 +8,7 @@ setwd("~/Desktop/IGF1_MS/Analysis/R_Scripts")
 source("00_functions.R")
 
 # Read Data
-igf_lh_data <- read.csv('IGF1_SoayLambs_Final.csv',  header = T, stringsAsFactors = F, fileEncoding="UTF-8-BOM")
+igf_lh_data <- read.csv('IGF1_SoayLambs.csv',  header = T, stringsAsFactors = F, fileEncoding="UTF-8-BOM")
 
 # # Temp dataset for stan models 
 temp <- igf_lh_data
