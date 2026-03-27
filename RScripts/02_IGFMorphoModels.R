@@ -3,8 +3,7 @@ set.seed(2025)
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(see, tidybayes, rstanarm, rethinking, cmdstanr, parameters, tidyverse, lmerTest, ggeffects, plyr, reshape2, rptR, viridis, cowplot, bayesplot, patchwork, ggpubr, mgcv)
 
-# Set wd
-setwd("~/Desktop/IGF1_MS/Analysis/R_Scripts")
+# Set wd and source funcs
 source("00_functions.R")
 
 # Read Data
@@ -12,11 +11,6 @@ igf_lh_data <- read.csv('IGF1_SoayLambs_Final.csv',  header = T, stringsAsFactor
 
 # # Temp dataset for stan models 
 temp <- igf_lh_data
-
-# Conver Sex to female or not
-temp <- temp %>%
-  mutate(SexF = case_when(Sex == 1 ~ 1, 
-                          Sex == 2 ~ 0))
 
 # Subset relevant columns
 temp <- temp %>%
@@ -121,9 +115,8 @@ full_post_hornlenw <- summarize_model(fit_mod_hornlenw, predictors_linw)
 full_post_hornlenw$Trait <- c("HornLenWt")
 
 full_post_df <- bind_rows(full_post_weight, full_post_foreleg, full_post_hornlen, full_post_growth, full_post_forelegw, full_post_hornlenw)
-# write.table(full_post_df, file = "./Table2A.csv", sep = ",",row.names = FALSE)
 
-# Exrtact samples 
+# Extract samples 
 # Add "true" IGF values estimated in model to original dataset with observed values to compare against
 temp_w <- process_fit_mod(fit_mod_weight, temp_w)
 temp_f <- process_fit_mod(fit_mod_foreleg, temp_f)
